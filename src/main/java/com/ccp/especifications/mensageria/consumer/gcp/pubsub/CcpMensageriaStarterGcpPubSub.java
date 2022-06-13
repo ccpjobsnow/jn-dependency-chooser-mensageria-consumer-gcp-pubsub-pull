@@ -1,7 +1,5 @@
 package com.ccp.especifications.mensageria.consumer.gcp.pubsub;
 
-import java.util.function.Function;
-
 import com.ccp.dependency.injection.CcpImplementation;
 import com.ccp.especifications.mensageria.consumer.CcpMensageriaParameters;
 import com.ccp.especifications.mensageria.consumer.CcpMensageriaStarter;
@@ -17,10 +15,7 @@ import com.google.pubsub.v1.ProjectSubscriptionName;
 public class CcpMensageriaStarterGcpPubSub implements CcpMensageriaStarter {
 
 	@Override
-	public void synchronize(String topicName, Function<String, CcpMensageriaParameters> 
-	producer) {
-		
-		CcpMensageriaParameters parameters = producer.apply(topicName);
+	public void synchronize(CcpMensageriaParameters parameters) {
 		String projectName = parameters.tenantName;
 		int threads = parameters.threadsQuantity;
 		String fila = parameters.topicName;
@@ -36,5 +31,7 @@ public class CcpMensageriaStarterGcpPubSub implements CcpMensageriaStarter {
 		Subscriber subscriber = setExecutorProvider.build(); 
 		subscriber.startAsync();
 		subscriber.awaitTerminated();
+		
 	}
+
 }
