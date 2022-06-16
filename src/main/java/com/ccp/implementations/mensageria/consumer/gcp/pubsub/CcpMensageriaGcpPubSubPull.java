@@ -1,4 +1,4 @@
-package com.ccp.especifications.mensageria.consumer.gcp.pubsub;
+package com.ccp.implementations.mensageria.consumer.gcp.pubsub;
 
 import java.io.IOException;
 
