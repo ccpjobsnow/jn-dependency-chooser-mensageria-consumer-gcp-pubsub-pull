@@ -19,11 +19,6 @@
 			<artifactId>ccp-commons</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
-		<dependency>
-			<groupId>com.google.cloud</groupId>
-			<artifactId>google-cloud-pubsub</artifactId>
-			<version>1.55.0</version>
-		</dependency>
 
 	</dependencies>
 
