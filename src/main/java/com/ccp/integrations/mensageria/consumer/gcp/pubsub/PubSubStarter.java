@@ -10,7 +10,7 @@ import com.ccp.dependency.injection.CcpDependencyInject;
 import com.ccp.dependency.injection.CcpDependencyInjection;
 import com.ccp.especifications.instant.messenger.CcpInstantMessenger;
 import com.ccp.implementations.instant.messages.telegram.InstantMessenger;
-import com.ccp.jn.sync.AsyncServices;
+import com.ccp.jn.async.AsyncServices;
 import com.ccp.process.CcpProcess;
 import com.google.api.gax.core.ExecutorProvider;
 import com.google.api.gax.core.FixedCredentialsProvider;
