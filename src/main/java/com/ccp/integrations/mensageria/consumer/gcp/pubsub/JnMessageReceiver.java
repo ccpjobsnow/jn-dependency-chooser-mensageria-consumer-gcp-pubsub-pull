@@ -2,7 +2,7 @@ package com.ccp.integrations.mensageria.consumer.gcp.pubsub;
 
 import com.ccp.decorators.CcpMapDecorator;
 import com.ccp.dependency.injection.CcpDependencyInject;
-import com.ccp.especifications.instant.messenger.CcpInstantMessenger;
+import com.ccp.jn.async.business.NotifyError;
 import com.ccp.process.CcpProcess;
 import com.google.cloud.pubsub.v1.AckReplyConsumer;
 import com.google.cloud.pubsub.v1.MessageReceiver;
@@ -15,7 +15,7 @@ public class JnMessageReceiver implements MessageReceiver {
 	private final CcpProcess process;
 	
 	@CcpDependencyInject
-	private CcpInstantMessenger instantMessenger;
+	private final NotifyError notifyError =  new NotifyError();
 
 	private CcpMapDecorator parameters;
 
@@ -32,7 +32,7 @@ public class JnMessageReceiver implements MessageReceiver {
 			this.process.execute(mdMessage);
 			consumer.ack();
 		} catch (Exception e) {
-			this.instantMessenger.sendErrorToSupport(this.parameters, e);
+			this.notifyError.sendErrorToSupport(e);
 			consumer.nack();
 		}
 		

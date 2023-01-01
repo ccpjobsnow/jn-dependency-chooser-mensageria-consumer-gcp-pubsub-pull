@@ -8,15 +8,14 @@ import java.io.InputStream;
 import com.ccp.decorators.CcpMapDecorator;
 import com.ccp.dependency.injection.CcpDependencyInject;
 import com.ccp.dependency.injection.CcpDependencyInjection;
-import com.ccp.especifications.instant.messenger.CcpInstantMessenger;
 import com.ccp.implementations.instant.messages.telegram.InstantMessenger;
 import com.ccp.jn.async.AsyncServices;
+import com.ccp.jn.async.business.NotifyError;
 import com.ccp.process.CcpProcess;
 import com.google.api.gax.core.ExecutorProvider;
 import com.google.api.gax.core.FixedCredentialsProvider;
 import com.google.api.gax.core.InstantiatingExecutorProvider;
 import com.google.auth.oauth2.ServiceAccountCredentials;
-import com.google.cloud.pubsub.v1.MessageReceiver;
 import com.google.cloud.pubsub.v1.Subscriber;
 import com.google.cloud.pubsub.v1.Subscriber.Builder;
 import com.google.pubsub.v1.ProjectSubscriptionName;
@@ -26,11 +25,12 @@ public class PubSubStarter {
 	final CcpMapDecorator parameters;
 	
 	@CcpDependencyInject
-	CcpInstantMessenger instantMessenger;
+	private final JnMessageReceiver queue;
 	
 	@CcpDependencyInject
-	private final MessageReceiver queue;
-
+	private final NotifyError notifyError =  new NotifyError();
+	
+	
 	public PubSubStarter( CcpMapDecorator args) {
 		this.parameters = args;
 		String topic = this.parameters.getAsString("topic");
@@ -59,7 +59,7 @@ public class PubSubStarter {
 			subscriber.startAsync();
 			subscriber.awaitTerminated();
 		} catch (Throwable e) {
-			this.instantMessenger.sendErrorToSupport(this.parameters, e);
+			this.notifyError.sendErrorToSupport(e);
 		} finally {
 			if (subscriber != null) {
 				subscriber.stopAsync();
@@ -77,7 +77,7 @@ public class PubSubStarter {
 			return create;
 			
 		}catch(IOException e) {
-			this.instantMessenger.sendErrorToSupport(this.parameters, e);
+			this.notifyError.sendErrorToSupport(e);
 			throw new RuntimeException(e);
 		}
 	}
