@@ -17,10 +17,7 @@ public class JnMessageReceiver implements MessageReceiver {
 	@CcpDependencyInject
 	private final NotifyError notifyError =  new NotifyError();
 
-	private CcpMapDecorator parameters;
-
-	public JnMessageReceiver(CcpProcess process, CcpMapDecorator parameters) {
-		this.parameters = parameters;
+	public JnMessageReceiver(CcpProcess process) {
 		this.process = process;
 	}
 

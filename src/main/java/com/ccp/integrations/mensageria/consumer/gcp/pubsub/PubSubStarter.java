@@ -35,7 +35,7 @@ public class PubSubStarter {
 		this.parameters = args;
 		String topic = this.parameters.getAsString("topic");
 		CcpProcess process = AsyncServices.catalog.getAsObject(topic);
-		this.queue = new JnMessageReceiver(process, this.parameters);
+		this.queue = new JnMessageReceiver(process);
 
 	}
 		
