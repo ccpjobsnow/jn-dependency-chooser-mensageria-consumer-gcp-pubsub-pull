@@ -1,4 +1,4 @@
-package com.ccp.integrations.mensageria.consumer.gcp.pubsub;
+package com.ccp.topic.consumer.pubsub.pull;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -8,7 +8,15 @@ import java.io.InputStream;
 import com.ccp.decorators.CcpMapDecorator;
 import com.ccp.dependency.injection.CcpDependencyInject;
 import com.ccp.dependency.injection.CcpDependencyInjection;
+import com.ccp.implementations.db.bulk.Bulk;
+import com.ccp.implementations.db.crud.elasticsearch.Crud;
+import com.ccp.implementations.db.utils.elasticsearch.DbUtils;
+import com.ccp.implementations.db.utils.elasticsearch.Query;
+import com.ccp.implementations.emails.sendgrid.Email;
+import com.ccp.implementations.file.bucket.FileBucket;
+import com.ccp.implementations.http.apache.mime.Http;
 import com.ccp.implementations.instant.messages.telegram.InstantMessenger;
+import com.ccp.implementations.text.extractor.apache.tika.TextExtractor;
 import com.ccp.jn.async.AsyncServices;
 import com.ccp.jn.async.business.NotifyError;
 import com.ccp.process.CcpProcess;
@@ -19,7 +27,6 @@ import com.google.auth.oauth2.ServiceAccountCredentials;
 import com.google.cloud.pubsub.v1.Subscriber;
 import com.google.cloud.pubsub.v1.Subscriber.Builder;
 import com.google.pubsub.v1.ProjectSubscriptionName;
-
 public class PubSubStarter {
 
 	final CcpMapDecorator parameters;
@@ -84,11 +91,24 @@ public class PubSubStarter {
 
 	
 	public static void main(String[] args) {
-		CcpDependencyInjection.loadAllImplementationsProviders(new InstantMessenger());
+		CcpDependencyInjection.loadAllImplementationsProviders
+		(
+				new InstantMessenger(),
+				new TextExtractor(),
+				new FileBucket(),
+				new DbUtils(),
+				new Email(),
+				new Query(),
+				new Http(),
+				new Bulk(),
+				new Crud()
+		);
 		String json = args[0];
 		CcpMapDecorator md = new CcpMapDecorator(json);
-		PubSubStarter instance = new PubSubStarter(md);
-		CcpDependencyInjection.injectDependencies(instance);
+		PubSubStarter pubSubStarter = new PubSubStarter(md);
+		CcpDependencyInjection.injectDependencies(pubSubStarter);
+		pubSubStarter.synchronizeMessages();
+		
 	}
 	
 }

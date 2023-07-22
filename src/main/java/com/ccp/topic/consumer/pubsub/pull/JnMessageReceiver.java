@@ -1,4 +1,4 @@
-package com.ccp.integrations.mensageria.consumer.gcp.pubsub;
+package com.ccp.topic.consumer.pubsub.pull;
 
 import com.ccp.decorators.CcpMapDecorator;
 import com.ccp.dependency.injection.CcpDependencyInject;

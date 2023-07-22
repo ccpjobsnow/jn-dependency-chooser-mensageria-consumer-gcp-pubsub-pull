@@ -2,8 +2,8 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>com.ccp.jn</groupId> 
-	<artifactId>jn-mensageria-consumer-gcp-pubsub</artifactId>
+	<groupId>com.ccp.jn</groupId>
+	<artifactId>jn-topic-consumer-pubsub-pull</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 
 	<properties>
@@ -13,30 +13,8 @@
 		<maven.compiler.source>1.8</maven.compiler.source>
 		<maven.compiler.target>1.8</maven.compiler.target>
 	</properties>
+
 	<dependencies>
-		<dependency>
-			<groupId>com.ccp</groupId>
-			<artifactId>ccp-commons</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
-		</dependency>
-
-		<dependency>
-			<groupId>com.ccp</groupId>
-			<artifactId>ccp-instant-message-telegram</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
-		</dependency>
-
-		<dependency>
-			<groupId>com.ccp.jn</groupId>
-			<artifactId>jn-business-async</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
-		</dependency>
-		<dependency>
-			<groupId>com.ccp.jn</groupId>
-			<artifactId>jn-business-commons</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
-		</dependency>
-
 		<dependency>
 			<groupId>com.google.cloud</groupId>
 			<artifactId>google-cloud-pubsub</artifactId>
@@ -48,6 +26,62 @@
 			<version>1.37.1</version>
 		</dependency>
 
+		<dependency>
+			<groupId>com.ccp</groupId>
+			<artifactId>ccp-commons</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>com.ccp</groupId>
+			<artifactId>ccp-text-extractor-apache-tika</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>com.ccp</groupId>
+			<artifactId>ccp-instant-messenger-telegram</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>com.ccp</groupId>
+			<artifactId>ccp-http-apache-mime</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>com.ccp</groupId>
+			<artifactId>ccp-file-bucket-gcp</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>com.ccp</groupId>
+			<artifactId>ccp-email-sendgrid</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>com.ccp</groupId>
+			<artifactId>ccp-db-utils-elasticsearch</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>com.ccp</groupId>
+			<artifactId>ccp-db-query-elasticsearch</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>com.ccp</groupId>
+			<artifactId>ccp-db-crud-elasticsearch</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>com.ccp</groupId>
+			<artifactId>ccp-db-bulk-elasticsearch</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>com.ccp.jn</groupId>
+			<artifactId>jn-business-async</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
 	</dependencies>
+
 
 </project>
