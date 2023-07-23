@@ -36,7 +36,7 @@ public class PubSubStarter {
 	private final JnMessageReceiver queue;
 	
 	@CcpDependencyInject
-	private final NotifyError notifyError =  new NotifyError();
+	private NotifyError notifyError;
 	
 	
 	public PubSubStarter( CcpMapDecorator args) {
