@@ -42,7 +42,7 @@ public class PubSubStarter {
 	public PubSubStarter( CcpMapDecorator args) {
 		this.parameters = args;
 		String topic = this.parameters.getAsString("topic");
-		CcpProcess process = AsyncServices.catalog.getAsObject(topic);
+		CcpProcess process = AsyncServices.getProcess(topic);
 		this.queue = new JnMessageReceiver(process);
 
 	}
