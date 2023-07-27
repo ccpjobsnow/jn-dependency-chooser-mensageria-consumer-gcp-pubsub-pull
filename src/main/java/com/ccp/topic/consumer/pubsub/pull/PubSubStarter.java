@@ -27,7 +27,7 @@ import com.google.auth.oauth2.ServiceAccountCredentials;
 import com.google.cloud.pubsub.v1.Subscriber;
 import com.google.cloud.pubsub.v1.Subscriber.Builder;
 import com.google.pubsub.v1.ProjectSubscriptionName;
-import com.jn.commons.JnBusinessEntity;
+import com.jn.commons.JnEntity;
 public class PubSubStarter { 
 
 	final CcpMapDecorator parameters;
@@ -104,7 +104,7 @@ public class PubSubStarter {
 				new Bulk(),
 				new Crud()
 		);
-		JnBusinessEntity.loadEntitiesMetadata();
+		JnEntity.loadEntitiesMetadata();
 		String json = args[0];
 		CcpMapDecorator md = new CcpMapDecorator(json);
 		PubSubStarter pubSubStarter = new PubSubStarter(md);
