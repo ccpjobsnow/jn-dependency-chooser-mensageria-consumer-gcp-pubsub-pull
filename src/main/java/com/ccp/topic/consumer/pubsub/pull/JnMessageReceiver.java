@@ -25,7 +25,7 @@ public class JnMessageReceiver implements MessageReceiver {
 			ByteString data = message.getData();
 			String receivedMessage = data.toStringUtf8();
 			CcpMapDecorator mdMessage = new CcpMapDecorator(receivedMessage);
-			AsyncServices.executeProcess(topic, mdMessage);
+			AsyncServices.executeProcess(this.topic, mdMessage);
 			consumer.ack();
 		} catch (Exception e) {
 			this.notifyError.sendErrorToSupport(e);
