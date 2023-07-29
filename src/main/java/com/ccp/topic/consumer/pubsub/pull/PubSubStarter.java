@@ -17,9 +17,7 @@ import com.ccp.implementations.file.bucket.gcp.FileBucket;
 import com.ccp.implementations.http.apache.mime.Http;
 import com.ccp.implementations.instant.messenger.telegram.InstantMessenger;
 import com.ccp.implementations.text.extractor.apache.tika.TextExtractor;
-import com.ccp.jn.async.AsyncServices;
 import com.ccp.jn.async.business.NotifyError;
-import com.ccp.process.CcpProcess;
 import com.google.api.gax.core.ExecutorProvider;
 import com.google.api.gax.core.FixedCredentialsProvider;
 import com.google.api.gax.core.InstantiatingExecutorProvider;
@@ -42,8 +40,7 @@ public class PubSubStarter {
 	public PubSubStarter( CcpMapDecorator args) {
 		this.parameters = args;
 		String topic = this.parameters.getAsString("topic");
-		CcpProcess process = AsyncServices.getProcess(topic);
-		this.queue = new JnMessageReceiver(process);
+		this.queue = new JnMessageReceiver(topic);
 
 	}
 		
