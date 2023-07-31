@@ -9,7 +9,7 @@ import com.ccp.decorators.CcpMapDecorator;
 import com.ccp.dependency.injection.CcpDependencyInject;
 import com.ccp.dependency.injection.CcpDependencyInjection;
 import com.ccp.implementations.db.bulk.elasticsearch.Bulk;
-import com.ccp.implementations.db.crud.elasticsearch.Crud;
+import com.ccp.implementations.db.dao.elasticsearch.Dao;
 import com.ccp.implementations.db.utils.elasticsearch.DbUtils;
 import com.ccp.implementations.db.utils.elasticsearch.Query;
 import com.ccp.implementations.emails.sendgrid.Email;
@@ -34,7 +34,7 @@ public class PubSubStarter {
 	private final JnMessageReceiver queue;
 	
 	@CcpDependencyInject
-	private NotifyError notifyError;
+	private NotifyError notifyError = CcpDependencyInjection.getInjected(NotifyError.class);
 	
 	
 	public PubSubStarter( CcpMapDecorator args) {
@@ -64,7 +64,7 @@ public class PubSubStarter {
 			subscriber.startAsync();
 			subscriber.awaitTerminated();
 		} catch (Throwable e) {
-			this.notifyError.sendErrorToSupport(e);
+			this.notifyError.execute(e);
 		} finally {
 			if (subscriber != null) {
 				subscriber.stopAsync();
@@ -82,7 +82,7 @@ public class PubSubStarter {
 			return create;
 			
 		}catch(IOException e) {
-			this.notifyError.sendErrorToSupport(e);
+			this.notifyError.execute(e);
 			throw new RuntimeException(e);
 		}
 	}
@@ -99,7 +99,7 @@ public class PubSubStarter {
 				new Query(),
 				new Http(),
 				new Bulk(),
-				new Crud()
+				new Dao()
 		);
 		JnEntity.loadEntitiesMetadata();
 		String json = args[0];

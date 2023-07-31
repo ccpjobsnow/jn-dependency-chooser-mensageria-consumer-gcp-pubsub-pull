@@ -28,7 +28,7 @@ public class JnMessageReceiver implements MessageReceiver {
 			AsyncServices.executeProcess(this.topic, mdMessage);
 			consumer.ack();
 		} catch (Exception e) {
-			this.notifyError.sendErrorToSupport(e);
+			this.notifyError.execute(e);
 			consumer.nack();
 		}
 		
