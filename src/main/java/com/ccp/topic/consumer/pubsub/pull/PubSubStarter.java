@@ -64,7 +64,7 @@ public class PubSubStarter {
 			subscriber.startAsync();
 			subscriber.awaitTerminated();
 		} catch (Throwable e) {
-			this.notifyError.execute(e);
+			this.notifyError.apply(e);
 		} finally {
 			if (subscriber != null) {
 				subscriber.stopAsync();
@@ -82,7 +82,7 @@ public class PubSubStarter {
 			return create;
 			
 		}catch(IOException e) {
-			this.notifyError.execute(e);
+			this.notifyError.apply(e);
 			throw new RuntimeException(e);
 		}
 	}
