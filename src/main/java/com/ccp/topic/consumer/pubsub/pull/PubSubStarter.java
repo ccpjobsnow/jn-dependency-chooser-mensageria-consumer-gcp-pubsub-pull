@@ -1,11 +1,10 @@
 package com.ccp.topic.consumer.pubsub.pull;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
 import com.ccp.decorators.CcpMapDecorator;
+import com.ccp.decorators.CcpStringDecorator;
 import com.ccp.dependency.injection.CcpDependencyInject;
 import com.ccp.dependency.injection.CcpDependencyInjection;
 import com.ccp.implementations.db.bulk.elasticsearch.Bulk;
@@ -75,20 +74,23 @@ public class PubSubStarter {
 	private FixedCredentialsProvider getCredentials(){
 		
 		String fileName = this.parameters.getAsString("credentials");
-		File file = new File(fileName);
-		
-		try(InputStream credentials = new FileInputStream(file)){
-			FixedCredentialsProvider create = FixedCredentialsProvider.create(ServiceAccountCredentials.fromStream(credentials));
-			return create;
-			
-		}catch(IOException e) {
-			this.notifyError.apply(e);
+
+		InputStream is = new CcpStringDecorator(fileName).inputStreamFrom().classLoader();
+
+		FixedCredentialsProvider create;
+		try {
+			create = FixedCredentialsProvider.create(ServiceAccountCredentials.fromStream(is));
+		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
+		return create;
+
+	
 	}
 
 	
 	public static void main(String[] args) {
+		
 		CcpDependencyInjection.loadAllImplementationsProviders
 		(
 				new InstantMessenger(),

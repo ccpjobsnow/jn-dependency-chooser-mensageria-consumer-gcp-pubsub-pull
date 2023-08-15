@@ -16,16 +16,6 @@
 
 	<dependencies>
 		<dependency>
-			<groupId>com.google.cloud</groupId>
-			<artifactId>google-cloud-pubsub</artifactId>
-			<version>1.55.0</version>
-		</dependency>
-		<dependency>
-			<groupId>com.google.cloud</groupId>
-			<artifactId>google-cloud-core</artifactId>
-			<version>1.37.1</version>
-		</dependency>
-		<dependency>
 			<groupId>com.ccp</groupId>
 			<artifactId>ccp-commons</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
@@ -80,6 +70,17 @@
 			<artifactId>jn-business-async</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
+				<dependency>
+			<groupId>com.google.cloud</groupId>
+			<artifactId>google-cloud-pubsub</artifactId>
+			<version>1.55.0</version>
+		</dependency>
+		<dependency>
+			<groupId>com.google.cloud</groupId>
+			<artifactId>google-cloud-core</artifactId>
+			<version>1.37.1</version>
+		</dependency>
+		
 	</dependencies>
 
 
