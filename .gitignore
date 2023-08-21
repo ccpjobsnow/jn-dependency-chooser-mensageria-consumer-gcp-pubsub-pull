@@ -1,3 +1,6 @@
 /target/
+.classpath
+.settings
+.project
 *.properties
 *.json
