@@ -90,14 +90,14 @@ public class PubSubStarter {
 		
 		CcpInstanceInjection.loadAllInstances
 		(
-				new Http(),
-				new JsonHandler(),
 				new InstantMessenger(),
+				new JsonHandler(),
 				new TextExtractor(),
 				new FileBucket(),
 				new DbUtils(),
 				new Email(),
 				new Query(),
+				new Http(),
 				new Bulk(),
 				new Dao()
 		);
