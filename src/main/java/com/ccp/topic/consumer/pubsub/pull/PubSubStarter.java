@@ -5,8 +5,7 @@ import java.io.InputStream;
 
 import com.ccp.decorators.CcpMapDecorator;
 import com.ccp.decorators.CcpStringDecorator;
-import com.ccp.dependency.injection.CcpDependencyInject;
-import com.ccp.dependency.injection.CcpDependencyInjection;
+import com.ccp.dependency.injection.CcpInstanceInjection;
 import com.ccp.implementations.db.bulk.elasticsearch.Bulk;
 import com.ccp.implementations.db.dao.elasticsearch.Dao;
 import com.ccp.implementations.db.utils.elasticsearch.DbUtils;
@@ -15,6 +14,7 @@ import com.ccp.implementations.emails.sendgrid.Email;
 import com.ccp.implementations.file.bucket.gcp.FileBucket;
 import com.ccp.implementations.http.apache.mime.Http;
 import com.ccp.implementations.instant.messenger.telegram.InstantMessenger;
+import com.ccp.implementations.text.extractor.apache.tika.JsonHandler;
 import com.ccp.implementations.text.extractor.apache.tika.TextExtractor;
 import com.ccp.jn.async.business.NotifyError;
 import com.google.api.gax.core.ExecutorProvider;
@@ -24,16 +24,13 @@ import com.google.auth.oauth2.ServiceAccountCredentials;
 import com.google.cloud.pubsub.v1.Subscriber;
 import com.google.cloud.pubsub.v1.Subscriber.Builder;
 import com.google.pubsub.v1.ProjectSubscriptionName;
-import com.jn.commons.JnEntity;
 public class PubSubStarter { 
 
 	final CcpMapDecorator parameters;
 	
-	@CcpDependencyInject
 	private final JnMessageReceiver queue;
 	
-	@CcpDependencyInject
-	private NotifyError notifyError = CcpDependencyInjection.getInjected(NotifyError.class);
+	private NotifyError notifyError = new NotifyError();
 	
 	
 	public PubSubStarter( CcpMapDecorator args) {
@@ -91,23 +88,22 @@ public class PubSubStarter {
 	
 	public static void main(String[] args) {
 		
-		CcpDependencyInjection.loadAllImplementationsProviders
+		CcpInstanceInjection.loadAllInstances
 		(
+				new Http(),
+				new JsonHandler(),
 				new InstantMessenger(),
 				new TextExtractor(),
 				new FileBucket(),
 				new DbUtils(),
 				new Email(),
 				new Query(),
-				new Http(),
 				new Bulk(),
 				new Dao()
 		);
-		JnEntity.loadEntitiesMetadata();
 		String json = args[0];
 		CcpMapDecorator md = new CcpMapDecorator(json);
 		PubSubStarter pubSubStarter = new PubSubStarter(md);
-		CcpDependencyInjection.injectDependencies(pubSubStarter);
 		pubSubStarter.synchronizeMessages();
 		
 	}

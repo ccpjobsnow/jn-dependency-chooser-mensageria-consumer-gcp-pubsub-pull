@@ -80,6 +80,11 @@
 			<artifactId>google-cloud-core</artifactId>
 			<version>1.37.1</version>
 		</dependency>
+		<dependency>
+			<groupId>com.ccp</groupId>
+			<artifactId>ccp-json-gson</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
 		
 	</dependencies>
 
