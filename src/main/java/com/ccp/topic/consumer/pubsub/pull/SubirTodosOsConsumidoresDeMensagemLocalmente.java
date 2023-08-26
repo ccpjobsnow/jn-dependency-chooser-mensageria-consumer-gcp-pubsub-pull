@@ -14,7 +14,7 @@ import com.ccp.implementations.text.extractor.apache.tika.JsonHandler;
 import com.ccp.implementations.text.extractor.apache.tika.TextExtractor;
 import com.jn.commons.JnTopic;
 
-public class TesteLocal {
+public class SubirTodosOsConsumidoresDeMensagemLocalmente {
 
 	
 	public static void main(String[] args) {
