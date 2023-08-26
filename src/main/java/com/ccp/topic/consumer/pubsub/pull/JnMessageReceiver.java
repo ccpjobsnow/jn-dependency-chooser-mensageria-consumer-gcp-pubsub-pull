@@ -23,7 +23,12 @@ public class JnMessageReceiver implements MessageReceiver {
 			ByteString data = message.getData();
 			String receivedMessage = data.toStringUtf8();
 			CcpMapDecorator mdMessage = new CcpMapDecorator(receivedMessage);
-			AsyncServices.executeProcess(this.topic, mdMessage);
+			try {
+				AsyncServices.executeProcess(this.topic, mdMessage);
+			} catch (Throwable e) {
+				CcpMapDecorator put = new CcpMapDecorator().put("topic", this.topic).put("values", mdMessage);
+				throw new RuntimeException(put.asPrettyJson(), e);
+			}
 			consumer.ack();
 		} catch (Throwable e) {
 			this.notifyError.apply(e);
