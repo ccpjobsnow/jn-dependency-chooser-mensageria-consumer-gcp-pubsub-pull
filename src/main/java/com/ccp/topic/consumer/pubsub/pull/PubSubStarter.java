@@ -5,7 +5,7 @@ import java.io.InputStream;
 
 import com.ccp.decorators.CcpMapDecorator;
 import com.ccp.decorators.CcpStringDecorator;
-import com.ccp.dependency.injection.CcpInstanceInjection;
+import com.ccp.dependency.injection.CcpDependencyInjection;
 import com.ccp.implementations.db.bulk.elasticsearch.Bulk;
 import com.ccp.implementations.db.dao.elasticsearch.Dao;
 import com.ccp.implementations.db.utils.elasticsearch.DbUtils;
@@ -59,6 +59,10 @@ public class PubSubStarter {
 			subscriber = setExecutorProvider.build(); 
 			subscriber.startAsync();
 			subscriber.awaitTerminated();
+		}catch (java.lang.IllegalStateException e) {
+			if(e.getCause() instanceof com.google.api.gax.rpc.NotFoundException) {
+				this.notifyError.apply(new RuntimeException("Topic still has not been created: " + this.parameters.getAsString("topic")));
+			}
 		} catch (Throwable e) {
 			this.notifyError.apply(e);
 		} finally {
@@ -88,7 +92,7 @@ public class PubSubStarter {
 	
 	public static void main(String[] args) {
 		
-		CcpInstanceInjection.loadAllInstances
+		CcpDependencyInjection.loadAllDependencies
 		(
 				new InstantMessenger(),
 				new JsonHandler(),
