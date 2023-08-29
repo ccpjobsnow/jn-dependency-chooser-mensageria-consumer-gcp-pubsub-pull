@@ -13,11 +13,9 @@ import com.ccp.implementations.instant.messenger.telegram.InstantMessenger;
 import com.ccp.implementations.text.extractor.apache.tika.JsonHandler;
 import com.ccp.implementations.text.extractor.apache.tika.TextExtractor;
 import com.ccp.jn.async.AsyncServices;
-import com.jn.commons.JnTopic;
 
-public class SubirTodosOsConsumidoresDeMensagemLocalmente {
+public class TesteNoxxon {
 
-	
 	public static void main(String[] args) {
 		CcpDependencyInjection.loadAllDependencies
 		(
@@ -32,11 +30,8 @@ public class SubirTodosOsConsumidoresDeMensagemLocalmente {
 				new Bulk(),
 				new Dao()
 		);
-		CcpMapDecorator md = new CcpMapDecorator("{'credentials': 'credentials.json', 'project': 'jn-hmg',  'threads': '1'}");
-		JnTopic[] topics = JnTopic.values();
-		for (JnTopic topic : topics) {
-			CcpMapDecorator put = md.put("topic", topic.name());
-			new Thread(() -> new PubSubStarter(put, mdMessage -> AsyncServices.executeProcess(topic.name(), mdMessage)).synchronizeMessages()).start();
-		}
+		CcpMapDecorator md = new CcpMapDecorator("{'topic':'bigquery','credentials': 'spt.json', 'project': 'noxxonsat-nxnet-spt',  'threads': '1'}");
+		new Thread(() -> new PubSubStarter(md, mdMessage -> AsyncServices.execute("bigquery", mdMessage)).synchronizeMessages()).start();
+
 	}
 }

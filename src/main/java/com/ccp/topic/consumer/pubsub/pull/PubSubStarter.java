@@ -2,6 +2,7 @@ package com.ccp.topic.consumer.pubsub.pull;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.function.Function;
 
 import com.ccp.decorators.CcpMapDecorator;
 import com.ccp.decorators.CcpStringDecorator;
@@ -16,6 +17,7 @@ import com.ccp.implementations.http.apache.mime.Http;
 import com.ccp.implementations.instant.messenger.telegram.InstantMessenger;
 import com.ccp.implementations.text.extractor.apache.tika.JsonHandler;
 import com.ccp.implementations.text.extractor.apache.tika.TextExtractor;
+import com.ccp.jn.async.AsyncServices;
 import com.ccp.jn.async.business.NotifyError;
 import com.google.api.gax.core.ExecutorProvider;
 import com.google.api.gax.core.FixedCredentialsProvider;
@@ -33,10 +35,10 @@ public class PubSubStarter {
 	private NotifyError notifyError = new NotifyError();
 	
 	
-	public PubSubStarter( CcpMapDecorator args) {
+	public PubSubStarter( CcpMapDecorator args, Function<CcpMapDecorator, CcpMapDecorator> function) {
 		this.parameters = args;
 		String topic = this.parameters.getAsString("topic");
-		this.queue = new JnMessageReceiver(topic);
+		this.queue = new JnMessageReceiver(topic, function);
 
 	}
 		
@@ -107,7 +109,7 @@ public class PubSubStarter {
 		);
 		String json = args[0];
 		CcpMapDecorator md = new CcpMapDecorator(json);
-		PubSubStarter pubSubStarter = new PubSubStarter(md);
+		PubSubStarter pubSubStarter = new PubSubStarter(md, mdMessage -> AsyncServices.executeProcess(md.getAsString("topic"), mdMessage));
 		pubSubStarter.synchronizeMessages();
 		
 	}
