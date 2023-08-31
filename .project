@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-	<name>jn-mensageria-consumer-gcp-pubsub</name>
+	<name>jn-dependency-chooser-mensageria-consumer-gcp-pubsub-pull</name>
 	<comment></comment>
 	<projects>
 	</projects>
