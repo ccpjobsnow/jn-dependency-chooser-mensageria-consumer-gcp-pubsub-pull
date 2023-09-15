@@ -78,7 +78,7 @@ public class PubSubStarter {
 		
 		String fileName = this.parameters.getAsString("credentials");
 
-		InputStream is = new CcpStringDecorator(fileName).inputStreamFrom().classLoader();
+		InputStream is = new CcpStringDecorator(fileName).inputStreamFrom().file();
 
 		FixedCredentialsProvider create;
 		try {

@@ -1,5 +1,7 @@
 package com.ccp.topic.consumer.pubsub.pull;
 
+import java.util.Arrays;
+
 import com.ccp.decorators.CcpMapDecorator;
 import com.ccp.dependency.injection.CcpDependencyInjection;
 import com.ccp.implementations.db.bulk.elasticsearch.Bulk;
@@ -34,7 +36,7 @@ public class SubirTodosOsConsumidoresDeMensagemLocalmente {
 		);
 		CcpMapDecorator md = new CcpMapDecorator("{'credentials': 'credentials.json', 'project': 'jn-hmg',  'threads': '1'}");
 		JnTopic[] topics = JnTopic.values();
-		for (JnTopic topic : topics) {
+		for (JnTopic topic : Arrays.asList(JnTopic.sendUserToken)) {
 			CcpMapDecorator put = md.put("topic", topic.name());
 			new Thread(() -> new PubSubStarter(put, mdMessage -> AsyncServices.executeProcess(topic.name(), mdMessage)).synchronizeMessages()).start();
 		}
