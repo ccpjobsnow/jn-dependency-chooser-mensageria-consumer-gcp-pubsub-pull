@@ -3,7 +3,7 @@ package com.ccp.topic.consumer.pubsub.pull;
 import java.util.function.Function;
 
 import com.ccp.decorators.CcpMapDecorator;
-import com.ccp.jn.async.business.NotifyError;
+import com.ccp.jn.async.business.JnAsyncBusinessNotifyError;
 import com.google.cloud.pubsub.v1.AckReplyConsumer;
 import com.google.cloud.pubsub.v1.MessageReceiver;
 import com.google.protobuf.ByteString;
@@ -11,7 +11,7 @@ import com.google.pubsub.v1.PubsubMessage;
 
 public class JnMessageReceiver implements MessageReceiver {
 	
-	private final NotifyError notifyError =  new NotifyError();
+	private final JnAsyncBusinessNotifyError notifyError =  new JnAsyncBusinessNotifyError();
 
 	private final String topic;
 
