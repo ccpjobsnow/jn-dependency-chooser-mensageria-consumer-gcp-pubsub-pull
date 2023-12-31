@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.function.Function;
 
-import com.ccp.decorators.CcpMapDecorator;
+import com.ccp.decorators.CcpJsonRepresentation;
 import com.ccp.decorators.CcpStringDecorator;
 import com.ccp.dependency.injection.CcpDependencyInjection;
 import com.ccp.implementations.db.bulk.elasticsearch.CcpElasticSerchDbBulk;
@@ -28,14 +28,14 @@ import com.google.cloud.pubsub.v1.Subscriber.Builder;
 import com.google.pubsub.v1.ProjectSubscriptionName;
 public class JnPubSubStarter { 
 
-	final CcpMapDecorator parameters;
+	final CcpJsonRepresentation parameters;
 	
 	private final JnMessageReceiver queue;
 	
 	private JnAsyncBusinessNotifyError notifyError = new JnAsyncBusinessNotifyError();
 	
 	
-	public JnPubSubStarter( CcpMapDecorator args, Function<CcpMapDecorator, CcpMapDecorator> function) {
+	public JnPubSubStarter( CcpJsonRepresentation args, Function<CcpJsonRepresentation, CcpJsonRepresentation> function) {
 		this.parameters = args;
 		String topic = this.parameters.getAsString("topic");
 		this.queue = new JnMessageReceiver(topic, function);
@@ -108,7 +108,7 @@ public class JnPubSubStarter {
 				new CcpElasticSearchDao()
 		);
 		String json = args[0];
-		CcpMapDecorator md = new CcpMapDecorator(json);
+		CcpJsonRepresentation md = new CcpJsonRepresentation(json);
 		JnPubSubStarter pubSubStarter = new JnPubSubStarter(md, mdMessage -> JnAsyncBusiness.executeProcess(md.getAsString("topic"), mdMessage));
 		pubSubStarter.synchronizeMessages();
 		

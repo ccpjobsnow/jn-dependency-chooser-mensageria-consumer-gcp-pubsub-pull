@@ -1,6 +1,6 @@
 package com.ccp.topic.consumer.pubsub.pull;
 
-import com.ccp.decorators.CcpMapDecorator;
+import com.ccp.decorators.CcpJsonRepresentation;
 import com.ccp.dependency.injection.CcpDependencyInjection;
 import com.ccp.implementations.db.bulk.elasticsearch.CcpElasticSerchDbBulk;
 import com.ccp.implementations.db.dao.elasticsearch.CcpElasticSearchDao;
@@ -32,11 +32,11 @@ public class GcpPubSubPullTesteLocal {
 				new CcpElasticSerchDbBulk(),
 				new CcpElasticSearchDao()
 		);
-		CcpMapDecorator md = new CcpMapDecorator("{'credentials': 'credentials.json', 'project': 'jn-hmg',  'threads': '1'}");
+		CcpJsonRepresentation md = new CcpJsonRepresentation("{'credentials': 'credentials.json', 'project': 'jn-hmg',  'threads': '1'}");
 		JnTopic[] topics = JnTopic.values();
 //		for (JnTopic topic : Arrays.asList(JnTopic.sendUserToken)) {
 		for (JnTopic topic : topics) {
-			CcpMapDecorator put = md.put("topic", topic.name());
+			CcpJsonRepresentation put = md.put("topic", topic.name());
 			new Thread(() -> new JnPubSubStarter(put, mdMessage -> JnAsyncBusiness.executeProcess(topic.name(), mdMessage)).synchronizeMessages()).start();
 		}
 	}

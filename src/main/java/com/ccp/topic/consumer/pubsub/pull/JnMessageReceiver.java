@@ -2,7 +2,8 @@ package com.ccp.topic.consumer.pubsub.pull;
 
 import java.util.function.Function;
 
-import com.ccp.decorators.CcpMapDecorator;
+import com.ccp.constantes.CcpConstants;
+import com.ccp.decorators.CcpJsonRepresentation;
 import com.ccp.jn.async.business.JnAsyncBusinessNotifyError;
 import com.google.cloud.pubsub.v1.AckReplyConsumer;
 import com.google.cloud.pubsub.v1.MessageReceiver;
@@ -15,9 +16,9 @@ public class JnMessageReceiver implements MessageReceiver {
 
 	private final String topic;
 
-	private final Function<CcpMapDecorator, CcpMapDecorator> function;
+	private final Function<CcpJsonRepresentation, CcpJsonRepresentation> function;
 	
-	public JnMessageReceiver(String topic, Function<CcpMapDecorator, CcpMapDecorator> function) {
+	public JnMessageReceiver(String topic, Function<CcpJsonRepresentation, CcpJsonRepresentation> function) {
 		this.function = function;
 		this.topic = topic;
 	}
@@ -26,11 +27,11 @@ public class JnMessageReceiver implements MessageReceiver {
 		try {
 			ByteString data = message.getData();
 			String receivedMessage = data.toStringUtf8();
-			CcpMapDecorator mdMessage = new CcpMapDecorator(receivedMessage);
+			CcpJsonRepresentation mdMessage = new CcpJsonRepresentation(receivedMessage);
 			try {
 				this.function.apply(mdMessage);
 			} catch (Throwable e) {
-				CcpMapDecorator put = new CcpMapDecorator().put("topic", this.topic).put("values", mdMessage);
+				CcpJsonRepresentation put = CcpConstants.EMPTY_JSON.put("topic", this.topic).put("values", mdMessage);
 				throw new RuntimeException(put.asPrettyJson(), e);
 			}
 			consumer.ack();
