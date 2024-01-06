@@ -4,6 +4,7 @@ import java.util.function.Function;
 
 import com.ccp.constantes.CcpConstants;
 import com.ccp.decorators.CcpJsonRepresentation;
+import com.ccp.jn.async.JnAsyncBusiness;
 import com.ccp.jn.async.business.JnAsyncBusinessNotifyError;
 import com.google.cloud.pubsub.v1.AckReplyConsumer;
 import com.google.cloud.pubsub.v1.MessageReceiver;
@@ -14,13 +15,10 @@ public class JnMessageReceiver implements MessageReceiver {
 	
 	private final JnAsyncBusinessNotifyError notifyError =  new JnAsyncBusinessNotifyError();
 
-	private final String topic;
-
-	private final Function<CcpJsonRepresentation, CcpJsonRepresentation> function;
+	public final String name;
 	
-	public JnMessageReceiver(String topic, Function<CcpJsonRepresentation, CcpJsonRepresentation> function) {
-		this.function = function;
-		this.topic = topic;
+	public JnMessageReceiver(String name) {
+		this.name = name;
 	}
 
 	public void receiveMessage(PubsubMessage message, AckReplyConsumer consumer) {
@@ -29,9 +27,10 @@ public class JnMessageReceiver implements MessageReceiver {
 			String receivedMessage = data.toStringUtf8();
 			CcpJsonRepresentation mdMessage = new CcpJsonRepresentation(receivedMessage);
 			try {
-				this.function.apply(mdMessage);
+				Function<CcpJsonRepresentation, CcpJsonRepresentation> task = msg -> JnAsyncBusiness.executeProcess(this.name, msg);
+				task.apply(mdMessage);
 			} catch (Throwable e) {
-				CcpJsonRepresentation put = CcpConstants.EMPTY_JSON.put("topic", this.topic).put("values", mdMessage);
+				CcpJsonRepresentation put = CcpConstants.EMPTY_JSON.put("topic", this.name).put("values", mdMessage);
 				throw new RuntimeException(put.asPrettyJson(), e);
 			}
 			consumer.ack();

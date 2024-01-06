@@ -1,6 +1,5 @@
 package com.ccp.topic.consumer.pubsub.pull;
 
-import com.ccp.decorators.CcpJsonRepresentation;
 import com.ccp.dependency.injection.CcpDependencyInjection;
 import com.ccp.implementations.db.bulk.elasticsearch.CcpElasticSerchDbBulk;
 import com.ccp.implementations.db.dao.elasticsearch.CcpElasticSearchDao;
@@ -12,7 +11,6 @@ import com.ccp.implementations.http.apache.mime.CcpApacheMimeHttp;
 import com.ccp.implementations.instant.messenger.telegram.CcpTelegramInstantMessenger;
 import com.ccp.implementations.json.gson.CcpGsonJsonHandler;
 import com.ccp.implementations.text.extractor.apache.tika.CcpApacheTikaTextExtractor;
-import com.ccp.jn.async.JnAsyncBusiness;
 import com.jn.commons.utils.JnTopic;
 
 public class GcpPubSubPullTesteLocal {
@@ -32,12 +30,11 @@ public class GcpPubSubPullTesteLocal {
 				new CcpElasticSerchDbBulk(),
 				new CcpElasticSearchDao()
 		);
-		CcpJsonRepresentation md = new CcpJsonRepresentation("{'credentials': 'credentials.json', 'project': 'jn-hmg',  'threads': '1'}");
 		JnTopic[] topics = JnTopic.values();
-//		for (JnTopic topic : Arrays.asList(JnTopic.sendUserToken)) {
 		for (JnTopic topic : topics) {
-			CcpJsonRepresentation put = md.put("topic", topic.name());
-			new Thread(() -> new JnPubSubStarter(put, mdMessage -> JnAsyncBusiness.executeProcess(topic.name(), mdMessage)).synchronizeMessages()).start();
+			String topicName = topic.name();
+			JnMessageReceiver xxx = new JnMessageReceiver(topicName);
+			new Thread(() -> new JnPubSubStarter(xxx, 1).synchronizeMessages()).start();
 		}
 	}
 }

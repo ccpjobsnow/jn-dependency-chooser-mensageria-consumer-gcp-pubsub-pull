@@ -2,9 +2,10 @@ package com.ccp.topic.consumer.pubsub.pull;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.function.Function;
 
+import com.ccp.decorators.CcpInputStreamDecorator;
 import com.ccp.decorators.CcpJsonRepresentation;
+import com.ccp.decorators.CcpPropertiesDecorator;
 import com.ccp.decorators.CcpStringDecorator;
 import com.ccp.dependency.injection.CcpDependencyInjection;
 import com.ccp.implementations.db.bulk.elasticsearch.CcpElasticSerchDbBulk;
@@ -17,7 +18,6 @@ import com.ccp.implementations.http.apache.mime.CcpApacheMimeHttp;
 import com.ccp.implementations.instant.messenger.telegram.CcpTelegramInstantMessenger;
 import com.ccp.implementations.json.gson.CcpGsonJsonHandler;
 import com.ccp.implementations.text.extractor.apache.tika.CcpApacheTikaTextExtractor;
-import com.ccp.jn.async.JnAsyncBusiness;
 import com.ccp.jn.async.business.JnAsyncBusinessNotifyError;
 import com.google.api.gax.core.ExecutorProvider;
 import com.google.api.gax.core.FixedCredentialsProvider;
@@ -30,32 +30,38 @@ public class JnPubSubStarter {
 
 	final CcpJsonRepresentation parameters;
 	
-	private final JnMessageReceiver queue;
+	private final JnMessageReceiver topic;
+	
+	private final int threads;
 	
 	private JnAsyncBusinessNotifyError notifyError = new JnAsyncBusinessNotifyError();
 	
 	
-	public JnPubSubStarter( CcpJsonRepresentation args, Function<CcpJsonRepresentation, CcpJsonRepresentation> function) {
-		this.parameters = args;
-		String topic = this.parameters.getAsString("topic");
-		this.queue = new JnMessageReceiver(topic, function);
+	public JnPubSubStarter(JnMessageReceiver topic, int threads) {
+		this.parameters = this.loadCredentials();
+		this.threads = threads;
+		this.topic = topic;
+	}
 
+	private CcpJsonRepresentation loadCredentials() {
+		CcpStringDecorator credentialsJson = new CcpStringDecorator("GOOGLE_APPLICATION_CREDENTIALS");
+		CcpPropertiesDecorator propertiesFrom = credentialsJson.propertiesFrom();
+		CcpJsonRepresentation environmentVariablesOrClassLoaderOrFile = propertiesFrom.environmentVariablesOrClassLoaderOrFile();
+		return environmentVariablesOrClassLoaderOrFile;
 	}
 		
 	public void synchronizeMessages() {
 		
 		Subscriber subscriber = null;
 		try {
-			String topic = this.parameters.getAsString("topic");
-			String projectName = this.parameters.getAsString("project");
-			Integer threads = this.parameters.getAsIntegerNumber("threads");
+			String projectName = this.parameters.getAsString("project_id");
 			
-			ProjectSubscriptionName subscription = ProjectSubscriptionName.of(projectName, topic);
-			ExecutorProvider executorProvider = InstantiatingExecutorProvider.newBuilder().setExecutorThreadCount(threads).build();
+			ProjectSubscriptionName subscription = ProjectSubscriptionName.of(projectName, this.topic.name);
+			ExecutorProvider executorProvider = InstantiatingExecutorProvider.newBuilder().setExecutorThreadCount(this.threads).build();
 
 			FixedCredentialsProvider credentials = this.getCredentials();
 			
-			Builder newBuilder = Subscriber.newBuilder(subscription, this.queue);
+			Builder newBuilder = Subscriber.newBuilder(subscription, this.topic);
 			Builder setCredentialsProvider = newBuilder.setCredentialsProvider(credentials);
 			Builder setExecutorProvider = setCredentialsProvider.setExecutorProvider(executorProvider);
 			subscriber = setExecutorProvider.build(); 
@@ -63,7 +69,7 @@ public class JnPubSubStarter {
 			subscriber.awaitTerminated();
 		}catch (java.lang.IllegalStateException e) {
 			if(e.getCause() instanceof com.google.api.gax.rpc.NotFoundException) {
-				this.notifyError.apply(new RuntimeException("Topic still has not been created: " + this.parameters.getAsString("topic")));
+				this.notifyError.apply(new RuntimeException("Topic still has not been created: " + this.topic.name));
 			}
 		} catch (Throwable e) {
 			this.notifyError.apply(e);
@@ -76,13 +82,14 @@ public class JnPubSubStarter {
 
 	private FixedCredentialsProvider getCredentials(){
 		
-		String fileName = this.parameters.getAsString("credentials");
-
-		InputStream is = new CcpStringDecorator(fileName).inputStreamFrom().fromEnvironmentVariablesOrClassLoaderOrFile();
+		CcpStringDecorator ccpStringDecorator = new CcpStringDecorator("GOOGLE_APPLICATION_CREDENTIALS");
+		CcpInputStreamDecorator inputStreamFrom = ccpStringDecorator.inputStreamFrom();
+		InputStream is = inputStreamFrom.fromEnvironmentVariablesOrClassLoaderOrFile();
 
 		FixedCredentialsProvider create;
 		try {
-			create = FixedCredentialsProvider.create(ServiceAccountCredentials.fromStream(is));
+			ServiceAccountCredentials fromStream = ServiceAccountCredentials.fromStream(is);
+			create = FixedCredentialsProvider.create(fromStream);
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
@@ -107,11 +114,22 @@ public class JnPubSubStarter {
 				new CcpElasticSerchDbBulk(),
 				new CcpElasticSearchDao()
 		);
-		String json = args[0];
-		CcpJsonRepresentation md = new CcpJsonRepresentation(json);
-		JnPubSubStarter pubSubStarter = new JnPubSubStarter(md, mdMessage -> JnAsyncBusiness.executeProcess(md.getAsString("topic"), mdMessage));
+		String topicName = args[0];
+		int threads = getThreads(args);
+		JnMessageReceiver topic = new JnMessageReceiver(topicName);
+		JnPubSubStarter pubSubStarter = new JnPubSubStarter(topic, threads);
 		pubSubStarter.synchronizeMessages();
 		
+	}
+
+	private static int getThreads(String[] args) {
+		try {
+			String s = args[1];
+			Integer valueOf = Integer.valueOf(s);
+			return valueOf;
+		} catch (Exception e) {
+			return 1;
+		}
 	}
 	
 }
