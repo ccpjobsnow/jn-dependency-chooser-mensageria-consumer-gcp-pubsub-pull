@@ -11,6 +11,7 @@ import com.ccp.implementations.http.apache.mime.CcpApacheMimeHttp;
 import com.ccp.implementations.instant.messenger.telegram.CcpTelegramInstantMessenger;
 import com.ccp.implementations.json.gson.CcpGsonJsonHandler;
 import com.ccp.jn.async.business.JnAsyncBusinessNotifyError;
+import com.ccp.jn.async.business.factory.CcpJnAsyncBusinessFactory;
 import com.jn.commons.entities.JnEntityAsyncTask;
 public class JnPubSubStarter { 
 
@@ -18,16 +19,18 @@ public class JnPubSubStarter {
 		
 		CcpDependencyInjection.loadAllDependencies
 		(
-				new CcpTelegramInstantMessenger(),
-				new CcpGsonJsonHandler(),
-				new CcpGcpFileBucket(),
-				new CcpElasticSearchDbRequest(),
-				new CcpSendGridEmailSender(),
 				new CcpElasticSearchQueryExecutor(),
-				new CcpApacheMimeHttp(),
+				new CcpTelegramInstantMessenger(),
+				new CcpElasticSearchDbRequest(),
+				new CcpJnAsyncBusinessFactory(),
+				new CcpSendGridEmailSender(),
 				new CcpElasticSerchDbBulk(),
-				new CcpElasticSearchDao()
+				new CcpElasticSearchDao(),
+				new CcpGsonJsonHandler(),
+				new CcpApacheMimeHttp(),
+				new CcpGcpFileBucket()
 		);
+		
 		String topicName = args[0];
 		
 		JnAsyncBusinessNotifyError notifyError = new JnAsyncBusinessNotifyError();
