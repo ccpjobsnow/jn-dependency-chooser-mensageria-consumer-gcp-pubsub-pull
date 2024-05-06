@@ -30,6 +30,7 @@ public class JnPubSubStarter {
 				new CcpElasticSearchCrud(),
 				new CcpGsonJsonHandler(),
 				new CcpApacheMimeHttp(),
+				
 				new CcpGcpFileBucket()
 		);
 		
