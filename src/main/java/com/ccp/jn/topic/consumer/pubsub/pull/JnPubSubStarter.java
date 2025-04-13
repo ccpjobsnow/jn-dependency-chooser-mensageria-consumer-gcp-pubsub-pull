@@ -10,10 +10,10 @@ import com.ccp.implementations.file.bucket.gcp.CcpGcpFileBucket;
 import com.ccp.implementations.http.apache.mime.CcpApacheMimeHttp;
 import com.ccp.implementations.instant.messenger.telegram.CcpTelegramInstantMessenger;
 import com.ccp.implementations.json.gson.CcpGsonJsonHandler;
-import com.ccp.jn.commons.business.JnAsyncBusinessNotifyError;
 import com.ccp.topic.consumer.pubsub.pull.CcpMessageReceiver;
 import com.ccp.topic.consumer.pubsub.pull.CcpPubSubStarter;
-import com.jn.commons.entities.JnEntityAsyncTask;
+import com.jn.business.JnBusinessNotifyError;
+import com.jn.entities.JnEntityAsyncTask;
 public class JnPubSubStarter { 
 
 	public static void main(String[] args) {
@@ -34,9 +34,9 @@ public class JnPubSubStarter {
 		
 		String topicName = args[0];
 		
-		CcpMessageReceiver topic = new CcpMessageReceiver(JnAsyncBusinessNotifyError.INSTANCE, JnEntityAsyncTask.ENTITY, topicName, JnAsyncBusinessNotifyError.INSTANCE);
+		CcpMessageReceiver topic = new CcpMessageReceiver(JnBusinessNotifyError.INSTANCE, JnEntityAsyncTask.ENTITY, topicName, JnBusinessNotifyError.INSTANCE);
 		int threads = getThreads(args);
-		CcpPubSubStarter pubSubStarter = new CcpPubSubStarter(JnAsyncBusinessNotifyError.INSTANCE, topic, threads);
+		CcpPubSubStarter pubSubStarter = new CcpPubSubStarter(JnBusinessNotifyError.INSTANCE, topic, threads);
 		pubSubStarter.synchronizeMessages();
 	}
 	private static int getThreads(String[] args) {
