@@ -12,7 +12,7 @@ import com.ccp.implementations.instant.messenger.telegram.CcpTelegramInstantMess
 import com.ccp.implementations.json.gson.CcpGsonJsonHandler;
 import com.ccp.topic.consumer.pubsub.pull.CcpMessageReceiver;
 import com.ccp.topic.consumer.pubsub.pull.CcpPubSubStarter;
-import com.jn.business.JnBusinessNotifyError;
+import com.jn.business.commons.JnBusinessNotifyError;
 import com.jn.entities.JnEntityAsyncTask;
 public class JnPubSubStarter { 
 
